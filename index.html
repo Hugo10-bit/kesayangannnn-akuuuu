@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Dark Love | Titik Merah + Musik MP3 ❤️</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        user-select: none;
+      }
+
+      body {
+        width: 100%;
+        min-height: 100vh;
+        background: #050505;
+        font-family: "Poppins", "Segoe UI", sans-serif;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .intro-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          ellipse at center,
+          #0a0a0a 0%,
+          #000000 100%
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition:
+          opacity 1s ease,
+          visibility 1s ease;
+      }
+
+      .intro-screen.hide {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .gift-btn {
+        background: linear-gradient(
+          135deg,
+          rgba(20, 20, 30, 0.95),
+          rgba(10, 10, 15, 0.98)
+        );
+        backdrop-filter: blur(20px);
+        border: 1.5px solid rgba(255, 60, 60, 0.4);
+        border-radius: 60px;
+        padding: 20px 50px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        animation: btnGlow 2.5s infinite;
+        box-shadow: 0 0 30px rgba(255, 60, 60, 0.2);
+      }
+
+      @keyframes btnGlow {
+        0%,
+        100% {
+          border-color: rgba(255, 60, 60, 0.4);
+          box-shadow: 0 0 20px rgba(255, 60, 60, 0.2);
+        }
+        50% {
+          border-color: rgba(255, 60, 60, 0.9);
+          box-shadow: 0 0 45px rgba(255, 60, 60, 0.5);
+        }
+      }
+
+      .gift-btn:hover {
+        transform: scale(1.05);
+        border-color: #ff3c3c;
+      }
+
+      .gift-btn-text {
+        font-size: 1.4rem;
+        font-weight: 500;
+        color: #ff6b6b;
+        letter-spacing: 2px;
+      }
+
+      .gift-btn-sub {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 10px;
+        letter-spacing: 3px;
+      }
+
+      .canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #0a0a0f 0%, #050508 100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 1.2s ease;
+        z-index: 900;
+      }
+
+      .canvas-container.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        cursor: pointer;
+      }
+
+      .love-message {
+        position: absolute;
+        bottom: 10%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        z-index: 20;
+        opacity: 0;
+        transition: opacity 1s ease;
+        pointer-events: none;
+      }
+
+      .love-message.show {
+        opacity: 1;
+      }
+
+      .love-message h2 {
+        color: #ff6b6b;
+        font-size: 1.3rem;
+        letter-spacing: 3px;
+        text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+      }
+
+      .love-message p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.7rem;
+        margin-top: 5px;
+        letter-spacing: 2px;
+      }
+
+      .status-indicator {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        color: #ff6b6b;
+        z-index: 30;
+        font-family: monospace;
+        letter-spacing: 1px;
+        pointer-events: none;
+      }
+
+      .now-playing {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        color: #ff6b6b;
+        z-index: 30;
+        border: 1px solid rgba(255, 107, 107, 0.4);
+        pointer-events: none;
+        animation: pulseText 2s infinite;
+      }
+
+      @keyframes pulseText {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .click-hint {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.4);
+        z-index: 30;
+        pointer-events: none;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 600px) {
+        .gift-btn {
+          padding: 15px 35px;
+        }
+        .gift-btn-text {
+          font-size: 1rem;
+        }
+        .love-message h2 {
+          font-size: 1rem;
+        }
+        .click-hint {
+          font-size: 0.55rem;
+          bottom: 15px;
+        }
+        .status-indicator {
+          font-size: 0.6rem;
+          bottom: 15px;
+        }
+        .now-playing {
+          font-size: 0.6rem;
+          padding: 6px 12px;
+          bottom: 15px;
+        }
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="intro-screen" id="introScreen">
+      <div class="gift-btn" id="giftBtn">
+        <div class="gift-btn-text">🌹 sayang, aku ada hadiah buat kamu 🌹</div>
+        <div class="gift-btn-sub">✦ click to open & play music ✦</div>
+      </div>
+    </div>
+
+    <div class="canvas-container" id="canvasContainer">
+      <canvas id="loveCanvas"></canvas>
+      <div class="love-message" id="loveMessage">
+        <h2>❤️ I LOVE YOU SAYANG ❤️</h2>
+        <p>"klik love-nya untuk kumpul & bubar"</p>
+      </div>
+      <div class="status-indicator" id="statusIndicator">💀 MENUNGGU</div>
+      <div class="click-hint" id="clickHint">
+        ✨ klik canvas untuk kumpul/bubar ✨
+      </div>
+      <div class="now-playing" id="nowPlaying">
+        🎵 Daylight - Taylor Swift
+      </div>
+    </div>
+
+    <script>
+      // ========== MUSIC PLAYER PAKAI MP3 KAMU ==========
+      let audioPlayer = null;
+      let musicStarted = false;
+
+      function startMusic() {
+        if (musicStarted) return;
+
+        try {
+          // Buat audio player dari file MP3 kamu
+          audioPlayer = new Audio("lagu.mp3");
+          audioPlayer.loop = true; // repeat terus
+          audioPlayer.volume = 0.8; // volume 80% (bisa diubah)
+
+          // Play lagu
+          const playPromise = audioPlayer.play();
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log("✅ Lagu berhasil diputar!");
+                musicStarted = true;
+
+                // Update tampilan
+                const nowPlaying = document.getElementById("nowPlaying");
+                nowPlaying.innerHTML = "🎵 🎶 LAGU SEDANG DIPUTAR 🎶🎵";
+                nowPlaying.style.animation = "pulseText 1s infinite";
+
+                setTimeout(() => {
+                  nowPlaying.innerHTML =
+                    "🎵 Daylight - Taylor Swift 🎵";
+                }, 4000);
+              })
+              .catch((error) => {
+                console.log("Autoplay gagal:", error);
+                showManualPlayButton();
+              });
+          }
+        } catch (e) {
+          console.log("Error:", e);
+          showManualPlayButton();
+        }
+      }
+
+      // Tombol backup kalau autoplay gagal
+      function showManualPlayButton() {
+        const btn = document.createElement("div");
+        btn.innerHTML = "🔊 KLIK UNTUK PUTAR LAGU";
+        btn.style.position = "fixed";
+        btn.style.bottom = "80px";
+        btn.style.right = "20px";
+        btn.style.background = "#ff6b6b";
+        btn.style.color = "white";
+        btn.style.padding = "10px 20px";
+        btn.style.borderRadius = "50px";
+        btn.style.fontSize = "12px";
+        btn.style.fontWeight = "bold";
+        btn.style.cursor = "pointer";
+        btn.style.zIndex = "1000";
+        btn.style.boxShadow = "0 0 15px rgba(255,107,107,0.5)";
+        btn.style.animation = "pulseText 1s infinite";
+
+        btn.onclick = function () {
+          if (audioPlayer) {
+            audioPlayer.play();
+          } else {
+            audioPlayer = new Audio("lagu.mp3");
+            audioPlayer.loop = true;
+            audioPlayer.volume = 0.8;
+            audioPlayer.play();
+          }
+          musicStarted = true;
+          btn.remove();
+
+          const nowPlaying = document.getElementById("nowPlaying");
+          nowPlaying.innerHTML = "🎵 🎶 LAGU SEDANG DIPUTAR 🎶🎵";
+          setTimeout(() => {
+            nowPlaying.innerHTML =
+              "🎵 Daylight - Taylor Swift 🎵";
+          }, 4000);
+        };
+
+        document.body.appendChild(btn);
+
+        // Hilangkan tombol setelah 10 detik kalau tidak diklik
+        setTimeout(() => {
+          if (btn && btn.remove) btn.remove();
+        }, 10000);
+      }
+
+      // ========== CANVAS LOVE PARTICLES (SAMA SEPERTI SEBELUMNYA) ==========
+      const canvas = document.getElementById("loveCanvas");
+      const ctx = canvas.getContext("2d");
+
+      let width, height;
+      let particles = [];
+      let targetPositions = [];
+      let randomPositions = [];
+      let isForming = true;
+      let animationStarted = false;
+      let animationFrameId = null;
+      let formationComplete = false;
+      let autoBubarTimer = null;
+
+      const statusIndicator = document.getElementById("statusIndicator");
+
+      function updateStatus(text, isLove = false) {
+        statusIndicator.innerHTML = isLove ? `❤️ ${text} ❤️` : `💀 ${text} 💀`;
+        statusIndicator.style.color = isLove ? "#ff6b6b" : "#888";
+      }
+
+      function generateHeartPoints() {
+        const points = [];
+        const pointCount = 2200;
+
+        for (let i = 0; i < pointCount; i++) {
+          const t = Math.random() * Math.PI * 2;
+          let x = 16 * Math.pow(Math.sin(t), 3);
+          let y =
+            13 * Math.cos(t) -
+            5 * Math.cos(2 * t) -
+            2 * Math.cos(3 * t) -
+            Math.cos(4 * t);
+          const xOffset = (Math.random() - 0.5) * 1.0;
+          const yOffset = (Math.random() - 0.5) * 1.0;
+          x = x + xOffset;
+          y = y + yOffset;
+          points.push({ x, y });
+        }
+        return points;
+      }
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      class Particle {
+        constructor(x, y, targetX, targetY, randomX, randomY, index) {
+          this.x = x;
+          this.y = y;
+          this.targetLoveX = targetX;
+          this.targetLoveY = targetY;
+          this.targetRandomX = randomX;
+          this.targetRandomY = randomY;
+          this.currentTargetX = targetX;
+          this.currentTargetY = targetY;
+          this.size = Math.random() * 2.5 + 1.8;
+          this.speed = 0.025 + Math.random() * 0.02;
+          this.progress = 1;
+          this.color = `hsl(${Math.random() * 15 + 350}, 85%, 60%)`;
+        }
+
+        setTarget(isLoveMode) {
+          if (isLoveMode) {
+            this.currentTargetX = this.targetLoveX;
+            this.currentTargetY = this.targetLoveY;
+          } else {
+            this.currentTargetX = this.targetRandomX;
+            this.currentTargetY = this.targetRandomY;
+          }
+          this.progress = 0;
+          this.startX = this.x;
+          this.startY = this.y;
+        }
+
+        update() {
+          if (this.progress >= 1) {
+            this.x = this.currentTargetX;
+            this.y = this.currentTargetY;
+            return true;
+          }
+          this.progress += this.speed;
+          if (this.progress >= 1) {
+            this.x = this.currentTargetX;
+            this.y = this.currentTargetY;
+            return true;
+          }
+          const ease = 1 - Math.pow(1 - this.progress, 3);
+          this.x = this.startX + (this.currentTargetX - this.startX) * ease;
+          this.y = this.startY + (this.currentTargetY - this.startY) * ease;
+          return false;
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = "#ff3c3c";
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      function generateLoveTargets() {
+        const points = generateHeartPoints();
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const scale = Math.min(width, height) / 32;
+        return points.map((point) => ({
+          x: centerX + point.x * scale,
+          y: centerY - point.y * scale + 15,
+        }));
+      }
+
+      function generateRandomTargets(count) {
+        const targets = [];
+        for (let i = 0; i < count; i++) {
+          targets.push({
+            x: Math.random() * (width + 200) - 100,
+            y: Math.random() * (height + 200) - 100,
+          });
+        }
+        return targets;
+      }
+
+      function createParticles(loveTargets, randomTargets) {
+        particles = [];
+        for (let i = 0; i < loveTargets.length; i++) {
+          const loveTarget = loveTargets[i];
+          const randomTarget = randomTargets[i];
+          particles.push(
+            new Particle(
+              randomTarget.x,
+              randomTarget.y,
+              loveTarget.x,
+              loveTarget.y,
+              randomTarget.x,
+              randomTarget.y,
+              i,
+            ),
+          );
+        }
+      }
+
+      function formLove() {
+        if (!animationStarted) return;
+        if (autoBubarTimer) clearTimeout(autoBubarTimer);
+        isForming = true;
+        formationComplete = false;
+        updateStatus("BERKUMPUL JADI LOVE 🔴", false);
+        document.getElementById("loveMessage").classList.remove("show");
+        for (let particle of particles) particle.setTarget(true);
+      }
+
+      function disperse() {
+        if (!animationStarted) return;
+        isForming = false;
+        formationComplete = false;
+        updateStatus("BUBAR... 💨", false);
+        for (let particle of particles) particle.setTarget(false);
+      }
+
+      function toggleFormation() {
+        if (!animationStarted) return;
+        if (isForming) disperse();
+        else formLove();
+      }
+
+      function animateParticles() {
+        if (!animationStarted) return;
+        ctx.clearRect(0, 0, width, height);
+        const gradient = ctx.createRadialGradient(
+          width / 2,
+          height / 2,
+          0,
+          width / 2,
+          height / 2,
+          height / 2,
+        );
+        gradient.addColorStop(0, "#0a0a12");
+        gradient.addColorStop(1, "#020205");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, width, height);
+
+        if (window.starPositions) {
+          for (let i = 0; i < window.starPositions.length; i++) {
+            ctx.beginPath();
+            ctx.arc(
+              window.starPositions[i].x,
+              window.starPositions[i].y,
+              1,
+              0,
+              Math.PI * 2,
+            );
+            ctx.fillStyle = `rgba(255,255,255,${window.starPositions[i].opacity || 0.3})`;
+            ctx.fill();
+          }
+        }
+
+        let allComplete = true;
+        for (let particle of particles) {
+          const completed = particle.update();
+          if (!completed) allComplete = false;
+          particle.draw();
+        }
+
+        if (allComplete && !formationComplete) {
+          formationComplete = true;
+          if (isForming) {
+            updateStatus("LOVE TERBENTUK 💕", true);
+            document.getElementById("loveMessage").classList.add("show");
+            createCompletionEffect();
+            autoBubarTimer = setTimeout(() => disperse(), 3000);
+          } else {
+            updateStatus("TITIK BERSERAKAN", false);
+            document.getElementById("loveMessage").classList.remove("show");
+          }
+        }
+        animationFrameId = requestAnimationFrame(animateParticles);
+      }
+
+      function createCompletionEffect() {
+        for (let i = 0; i < 40; i++) {
+          setTimeout(() => {
+            const sparkle = document.createElement("div");
+            sparkle.innerHTML = ["❤️", "🌹", "✨", "💫"][
+              Math.floor(Math.random() * 4)
+            ];
+            sparkle.style.position = "fixed";
+            sparkle.style.left = Math.random() * window.innerWidth + "px";
+            sparkle.style.bottom = "0px";
+            sparkle.style.fontSize = Math.random() * 20 + 15 + "px";
+            sparkle.style.animation = "floatUp 2s ease-out forwards";
+            sparkle.style.pointerEvents = "none";
+            sparkle.style.zIndex = "1000";
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 2000);
+          }, i * 30);
+        }
+      }
+
+      function initStars() {
+        window.starPositions = [];
+        for (let i = 0; i < 120; i++) {
+          window.starPositions.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            opacity: Math.random() * 0.4 + 0.1,
+          });
+        }
+      }
+
+      function initLoveSystem() {
+        resizeCanvas();
+        const loveTargets = generateLoveTargets();
+        const randomTargets = generateRandomTargets(loveTargets.length);
+        createParticles(loveTargets, randomTargets);
+        initStars();
+      }
+
+      function startLoveSystem() {
+        initLoveSystem();
+        animationStarted = true;
+        animateParticles();
+        setTimeout(() => formLove(), 500);
+      }
+
+      function stopAnimation() {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        if (autoBubarTimer) clearTimeout(autoBubarTimer);
+      }
+
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+        if (animationStarted) {
+          clearTimeout(resizeTimeout);
+          resizeTimeout = setTimeout(() => {
+            const wasForming = isForming;
+            stopAnimation();
+            resizeCanvas();
+            initLoveSystem();
+            animationStarted = true;
+            animateParticles();
+            if (wasForming) setTimeout(() => formLove(), 100);
+            else setTimeout(() => disperse(), 100);
+          }, 200);
+        }
+      });
+
+      const floatStyle = document.createElement("style");
+      floatStyle.textContent = `@keyframes floatUp { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }`;
+      document.head.appendChild(floatStyle);
+
+      // ========== BUKA HADIAH ==========
+      const introScreen = document.getElementById("introScreen");
+      const canvasContainer = document.getElementById("canvasContainer");
+      const giftBtn = document.getElementById("giftBtn");
+
+      function openGift() {
+        // MULAI LAGU DARI MP3 KAMU!
+        startMusic();
+
+        introScreen.classList.add("hide");
+
+        setTimeout(() => {
+          canvasContainer.classList.add("show");
+          startLoveSystem();
+          createInitialSparkles();
+        }, 500);
+      }
+
+      function createInitialSparkles() {
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const sparkle = document.createElement("div");
+            sparkle.innerHTML = ["✨", "💫", "⭐", "❤️", "🌹"][
+              Math.floor(Math.random() * 5)
+            ];
+            sparkle.style.position = "fixed";
+            sparkle.style.left = Math.random() * window.innerWidth + "px";
+            sparkle.style.top = Math.random() * window.innerHeight + "px";
+            sparkle.style.fontSize = Math.random() * 25 + 15 + "px";
+            sparkle.style.opacity = "0";
+            sparkle.style.animation = "sparklePop 0.8s ease-out forwards";
+            sparkle.style.pointerEvents = "none";
+            sparkle.style.zIndex = "1000";
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800);
+          }, i * 30);
+        }
+      }
+
+      const sparkleStyle = document.createElement("style");
+      sparkleStyle.textContent = `@keyframes sparklePop { 0% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(0); } }`;
+      document.head.appendChild(sparkleStyle);
+
+      canvas.addEventListener("click", () => {
+        if (animationStarted) {
+          toggleFormation();
+          canvas.style.transform = "scale(0.99)";
+          setTimeout(() => {
+            canvas.style.transform = "scale(1)";
+          }, 150);
+        }
+      });
+
+      giftBtn.addEventListener("click", openGift);
+
+      console.log(
+        "💀 Siap! File MP3 sudah siap, lagu akan play saat tombol diklik 💀",
+      );
+    </script>
+  </body>
+</html>
